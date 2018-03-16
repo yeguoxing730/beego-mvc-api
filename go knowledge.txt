@@ -1,0 +1,58 @@
+﻿1.struct
+  type typeName struct {
+    //...
+  }
+  
+  声明及初始化
+  var varName typeName             //①
+  varName := new(typeName)         //②
+  varName := typeName{[初始化值]}  //③
+  varName := &typeName{[初始化值]} //④
+  
+  
+2.面向对象借助struct实现
+  
+  type Rect struct {
+     x, y int
+ }
+ 方法声明
+  func (r *Rect) Area() int  {
+     return r.x*r.y
+  }
+  类初始化
+ rect :=new(Rect)
+ rect :=&Rect{}
+ rect :=&Rect{1,2}
+ rect :=&Rect{x:3,y:4}
+ 
+ 类构造函数
+ func NewRect(x,y int) *Rect {
+     return &Rect{x,y}
+ }
+3.go 接口定义 
+ --java 
+  public interface TestInterface {
+     public int getNumber(int num1, int num2);
+ }
+ 接口的实现类：
+ class Test1 implements TestInterface {
+     public int getNumber(int num1, int num2) {
+         return num1+num2;
+     }
+ }
+ 
+ 在Go语言中是这样实现的：
+ type Test struct {
+ }
+ 
+ func (t *Test) getNumber(num1 int, num2 int) int {
+     return num1 + num2
+ }
+ 
+ 这样同样new一个实现类的时候可以这么做：
+
+1 var test1 TestInterface = new(Test)
+2 fmt.Println(test1.getNumber(1, 2))
+这种类型的接口和Java中接口的显著差别在于这个接口在实现的时候并没有做继承一类的工作，
+在Go语言中，一个类只需要实现了接口要求的所有函数，就可以说这个类实现了这个接口
+，哪怕这个实现类还加上了其他函数，也不影响他是一个实现类。

@@ -1,0 +1,187 @@
+go 数据类型
+http://www.itkeyword.com/doc/0070231542996098275/go
+1.布尔类型
+	var v1 bool
+	v1 = true;
+	v2 := (1=2)
+2.整型
+类 型  长度（字节）     值 范 围
+int8    1              128 ~ 127
+uint8（即byte）1       0 ~ 255
+int16   2              32 768 ~ 32 767
+uint16  2               0 ~ 65 535
+int32   4              2 147 483 648 ~ 2 147 483 647
+uint32  4               0 ~ 4 294 967 295
+int64   8      9 223 372 036 854 775 808 ~ 9 223 372 036 854 775 807
+uint64  8       0 ~ 18 446 744 073 709 551 615
+int     平台相关        平台相关
+uint    平台相关        平台相关
+uintptr 同指针         在32位平台下为4字节，64位平台下为8字节
+var value2 int32
+value1 := 64 // value1将会被自动推导为int类型
+value2 =value1  //编译失败:cannot use value1 (type int) as type int32 in assignment。
+//使用强制类型转换可解决
+value2 = int32(value1)
+
+3.数值运算
+常规运算:+、-、*、/和%
+比较运算: > 、 < 、 == 、 >= 、 <= 和 !=
+需要注意:两个不同类型的整型数不能直接比较，比如 int8 类型的数和 int类型的数不能直接比较，但各种
+类型的整型变量都可以直接与字面常量（literal）进行比较，比如：
+var i int32
+var j int64
+i, j = 1, 2
+if i == j { // 编译错误
+fmt.Println("i and j are equal.")
+}
+if i == 1 || j == 2 { // 编译通过
+fmt.Println("i and j are equal.")
+}
+
+4.位运算
+x << y  左移 
+x >> y  右移 
+x ^ y   异或  
+x & y   与  
+x | y   或 
+^x      取反  
+
+5.浮点类型
+float32 和 float64 ，其中 float32 等价于C语言的 float 类型，
+float64 等价于C语言的 double 类型。
+
+var fvalue1 float32
+fvalue1 = 12
+fvalue2 := 12.0 // 如果不加小数点，fvalue2会被推导为整型而不是浮点型
+错误：
+fvalue1 = fvalue2
+而必须使用这样的强制类型转换：
+fvalue1 = float32(fvalue2)
+
+
+浮点数比较
+ import "math"
+// p为用户自定义的比较精度，比如0.00001
+func IsEqual(f1, f2, p float64) bool {
+    return math.Fdim(f1, f2) < p
+}
+
+6.字符串
+var str string  // 声明一个字符串变量
+str = "Hello world" // 字符串赋值
+ch := str[0] // 取字符串的第一个字符
+fmt.Printf("The length of \"%s\" is %d \n", str, len(str))
+fmt.Printf("The first character of \"%s\" is %c.\n", str, ch)
+
+
+str := "Hello world" // 字符串也支持声明时进行初始化的做法
+str[0] = 'X'  // 编译错误
+编译器会报类似如下的错误：
+cannot assign to str[0]
+如果想修改字符串的内容,可以通过如下的方式修改:
+s := "hello"
+c := []rune(s) //将字符串s转成rune数组
+c[0] = 'x' //修改rune数组中的第一个元素为x
+s2 := string(c) //根据rune数组创建一个新的字符串
+fmt.Println("s2=",s2)
+运行结果:
+    s2= xello
+	
+8.字符类型
+在Go语言中支持两个字符类型，一个是 byte （实际上是 uint8 的别名），代表UTF-8字符串的单个字节的值；
+另一个是 rune ，代表单个Unicode字符。出于简化语言的考虑，Go语言的多数API都假设字符串为UTF-8编码。
+尽管Unicode字符在标准库中有支持，但实际上较少使用。
+	
+9.数组
+以下为一些常规的数组声明方法：
+[32]byte // 长度为32的数组，每个元素为一个字节
+[2*N] struct { x, y int32 } // 复杂类型数组
+[1000]*float64  // 指针数组
+[3][5]int  // 二维数组
+[2][2][2]float64  // 等同于[2]([2]([2]float64))
+	
+//通过for循环遍历
+for i := 0; i < len(array); i++ {
+    fmt.Println("Element", i, "of array is", array[i])
+}
+//Go语言还提供了一个关键字range,用于便捷地遍历容器中的元素。
+//当然，数组也是range的支持范围。上面的遍历过程可以简化为如下的写法：
+for k, v := range array {  //k相当于索引,v相当于值
+    fmt.Println("Array element[", k, "]=", v)  
+}
+
+数组是值传递 
+数组切片
+
+
+
+创建一个初始元素个数为5的数组切片,元素初始值为0:
+mySlice1 := make([]int,5)
+创建一个初始元素个数为5的数组切片,元素初始值为0,并预留10个元素的存储空间:
+mySlice2 := make([]int,5,10) 
+通过cap()函数可以获取切片的分配空间,len()函数可以知道当前已存储的元素个数.
+
+
+与数组相比,数组切片多了一个存储能力的概念,即元素个数和分配的空间可以是两个不同的值,
+合理地设置存储能力的值,可以大幅降低数组切片内部重新分配内存和搬送内存块的频率，
+从而大大提高程序性能。通过append()函数可以在切片后面追加元素,例如:
+mySlice = append(mySlice, 8, 9, 10) 
+
+11.map
+
+type PersonInfo struct{
+    ID string
+    Name string
+    Address string
+}
+func main(){
+    var personDB map[string] PersonInfo //声明一个key=string,value=PersonInfo的map
+    personDB = make(map[string] PersonInfo) //通过make初始化
+
+    //往这个map里插入几条数据
+    personDB["0"] = PersonInfo{"12345","Tom","Room 203,..."}
+    personDB["1"] = PersonInfo{"1","Jack","Room 101,..."}
+    //....
+    //从这个map查找键为12345的信息
+    person, ok := personDB["0"] //如果查找到,则ok=true,否则=false
+    if ok{
+        fmt.Println("Found person",person.Name,"with ID",person.ID)
+    }else{
+        fmt.Println("Did not find person")
+    }
+}
+//运行结果:
+Found person Tom with ID 12345
+
+元素的删除
+delete(map变量名，map的key)
+元素查找
+	value,ok = map[key]
+	当然,如果你很确定该key一定能够找到对应的值的话,那就可以直接使用一个变量来接收,例如:
+	value := map[key]
+	或者,第二个参数用匿名参数来接收,例如:
+	value,_ := map[key]
+元素的遍历
+  myMap := make(map[int]int)
+	myMap[0] = 100
+	myMap[1] = 101
+	myMap[2] = 102
+  for i:=0;i<len(myMap);i++ {
+		fmt.Println("key=",i," value=",myMap[i])
+  }
+  
+  myMap := map[int]int{
+    0 : 10,
+    1 : 20,
+    2 : 30,
+}
+for k,v := range myMap{
+    fmt.Println("key=",k," value=",v)
+}
+
+
+11.nil 类型
+golang中的nil，很多人都误以为与Java、PHP等编程语言中的null一样。但是实际上Golang的niu复杂得多了
+按照Go语言规范，任何类型在未初始化时都对应一个零值：布尔类型是false，整型是0，字符串是""，而指针、函数、interface、slice、channel和map的零值都是nil。
+PS：这里没有说结构体struct的零值为nil，因为struct的零值与其属性有关
+nil没有默认的类型，尽管它是多个类型的零值，必须显式或隐式指定每个nil用法的明确类型。
